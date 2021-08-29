@@ -2,11 +2,23 @@
   <head>
     <title>A Million Dillions</title>
     <style>
-      html,
       body {
         width: 100vw;
         height: 1000vh;
         background-image: url("small.gif");
+        animation-duration: 0.3s;
+        animation-name: slide;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+
+      @keyframes slide {
+        from {
+          background-position: 0 0;
+        }
+        to {
+          background-position: -47px -31px;
+        }
       }
     </style>
   </head>
