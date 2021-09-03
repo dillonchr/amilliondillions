@@ -74,10 +74,24 @@
           );
         });
 
-        const canvas = document.querySelector(".canvas");
+        const { ink, paper } = window.location.search
+          .replace(/^\?/, "")
+          .split("&")
+          .reduce((o, c) => ({ ...o, [c.split("=")[0]]: c.split("=")[1] }), {
+            ink: "black",
+            paper: "white"
+          });
 
+        const canvas = document.querySelector(".canvas");
         canvas.style.width = `${pixelCount * 20}px`;
+        canvas.style.backgroundColor = paper;
         canvas.appendChild(fragment);
+
+        if ("black" !== ink) {
+          const ss = document.createElement("style");
+          ss.innerHTML = `.pixel.ink { background-color: ${ink}; }`;
+          document.head.appendChild(ss);
+        }
 
         const bitmap = document.querySelector("#bitmap");
         const scale = 4;
@@ -92,9 +106,9 @@
             .split(",")
             .map(n => parseInt(n, 16).toString(2).padStart(16, "0"));
 
-          ctx.fillStyle = "white";
+          ctx.fillStyle = paper;
           ctx.fillRect(0, 0, bitmapSize, bitmapSize);
-          ctx.fillStyle = "black";
+          ctx.fillStyle = ink;
 
           rows.forEach((row, y) => {
             row.split("").forEach((fill, x) => {
@@ -140,14 +154,6 @@
 
         portraits.forEach(addPortrait);
       })();
-
-      /*
-        "7,E4,F,F8,1F,F8,1F,FC,18,1C,10,4,17,74,32,26,30,6,11,44,10,84,10,4,13,64,8,88,4,10,3,E0".split(",").map(n => parseInt(n, 16).toString(2).padStart(8, "0")).join("")
-
-        0000011111100100000011111111100000011111111110000001111111111100000110000001110000010000000001000001011101110100001100100010011000110000000001100001000101000100000100001000010000010000000001000001001101100100000010001000100000000100000100000000001111100000
-
-        07E4,0FF8,1FF8,1FFC,181C,1004,1774,3226,3006,1144,1084,1004,1364,0888,0410,03E0
-      */
     </script>
   </body>
 </html>
