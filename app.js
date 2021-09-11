@@ -3,33 +3,6 @@ const PIXEL_COUNT = 16;
 const pixels = Array(PIXEL_COUNT)
   .fill(0)
   .map(() => Array(PIXEL_COUNT).fill(0));
-const fragment = document.createDocumentFragment();
-
-let draggingState = 1;
-
-for (const row of pixels) {
-  for (const pixel of row) {
-    const div = document.createElement("div");
-    div.className = "pixel";
-    div.addEventListener("mousedown", ({ target }) => {
-      draggingState = !target.classList.contains("ink");
-      target.classList.toggle("ink", !!draggingState);
-    });
-    div.addEventListener("mouseover", function (ev) {
-      if (1 === ev.buttons) {
-        ev.target.classList.toggle("ink", !!draggingState);
-      }
-    });
-    fragment.appendChild(div);
-  }
-}
-
-document.getElementById("clear").addEventListener("click", () => {
-  Array.from(document.querySelectorAll(".pixel.ink")).forEach(e =>
-    e.classList.remove("ink")
-  );
-});
-
 const { ink, paper } = window.location.search
   .replace(/^\?/, "")
   .split("&")
@@ -37,11 +10,13 @@ const { ink, paper } = window.location.search
     ink: "black",
     paper: "white"
   });
+let draggingState = 1;
+let backgroundUpdate = false;
+const selfies = document.querySelector(".selfies");
 
 const canvas = document.querySelector(".canvas");
 canvas.style.width = `${PIXEL_COUNT * 20}px`;
 canvas.style.backgroundColor = paper;
-canvas.appendChild(fragment);
 
 if ("black" !== ink) {
   const ss = document.createElement("style");
@@ -56,6 +31,50 @@ bitmap.width = bitmap.height = bitmapSize;
 bitmap.style.width = bitmap.style.height = `${bitmapSize}px`;
 
 const ctx = bitmap.getContext("2d");
+const PIXEL_ELEMENTS = buildBitmapEditor(pixels);
+
+function createPixel() {
+  const div = document.createElement("div");
+  div.className = "pixel";
+  div.addEventListener("mousedown", ({ target }) => {
+    draggingState = !target.classList.contains("ink");
+    target.classList.toggle("ink", !!draggingState);
+  });
+  div.addEventListener("mouseover", function (ev) {
+    if (1 === ev.buttons) {
+      ev.target.classList.toggle("ink", !!draggingState);
+    }
+  });
+  return div;
+}
+
+function buildBitmapEditor(pixels) {
+  const pixelElements = Array(PIXEL_COUNT * PIXEL_COUNT)
+    .fill(0)
+    .map(createPixel);
+  pixelElements.forEach(el => canvas.appendChild(el));
+  return pixelElements;
+}
+
+document.getElementById("clear").addEventListener("click", () => {
+  PIXEL_ELEMENTS.forEach(({ classList }) => classList.toggle("ink", false));
+});
+
+document.getElementById("wallpaper").addEventListener("click", () => {
+  const hexMap = Array.from(
+    PIXEL_ELEMENTS.map(e => +e.classList.contains("ink"))
+      .join("")
+      .match(/\d{16}/g)
+  )
+    .map(n => parseInt(n, 2).toString(16))
+    .join(",");
+  console.log(
+    "%c%s",
+    `background-color: ${paper}; color: ${ink}; font-size: 32px;`,
+    hexMap
+  );
+  addPortrait([hexMap, String(Date.now())], true);
+});
 
 function clearCanvasRenderer() {
   ctx.fillStyle = paper;
@@ -78,10 +97,7 @@ function getImageUrl(rows) {
   return url;
 }
 
-let backgroundUpdate = false;
-const selfies = document.querySelector(".selfies");
-
-function addPortrait([pixels, label]) {
+function addPortrait([pixels, label], forceBackgroundUpdate = false) {
   const img = new Image(bitmapSize, bitmapSize);
   img.className = "selfie";
   img.title = label;
@@ -90,15 +106,15 @@ function addPortrait([pixels, label]) {
     .map(n => parseInt(n, 16).toString(2).padStart(16, "0"));
   img.src = getImageUrl(rows);
   img.addEventListener("click", () => {
-    const pixelEls = document.querySelectorAll(".pixel");
     let i = 0;
     for (let row of rows) {
       for (const pixel of row) {
-        pixelEls[i++].classList.toggle("ink", 0 < pixel);
+        PIXEL_ELEMENTS[i++].classList.toggle("ink", 0 < pixel);
       }
     }
   });
-  if (!backgroundUpdate) {
+  if (!backgroundUpdate || forceBackgroundUpdate) {
+    console.log({ backgroundUpdate, forceBackgroundUpdate });
     backgroundUpdate = true;
     document.body.style.backgroundImage = `url(${img.src})`;
     const setFavicon = document.createElement("link");
@@ -110,6 +126,10 @@ function addPortrait([pixels, label]) {
 }
 
 const portraits = [
+  [
+    "ffff,e003,c001,8000,8e1c,962c,8000,8080,8000,8220,81c0,8000,8410,c3e1,e003,ffff",
+    "2021/09/10"
+  ],
   [
     "804,7f8,1ffc,3ffc,3ffc,300c,2004,2e74,2214,2104,2186,2425,d3c8,d008,2ff1,1002",
     "2021/09/04"
@@ -128,5 +148,5 @@ const portraits = [
   ]
 ];
 
-portraits.forEach(addPortrait);
+portraits.forEach(tup => addPortrait(tup));
 clearCanvasRenderer();
