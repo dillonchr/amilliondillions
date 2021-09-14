@@ -122,7 +122,9 @@ function addPortrait([pixels, label], forceBackgroundUpdate = false) {
     setFavicon.setAttribute("href", img.src);
     document.querySelector("head").appendChild(setFavicon);
   }
-  selfies.appendChild(img);
+  if (!forceBackgroundUpdate) {
+    selfies.appendChild(img);
+  }
 }
 
 const portraits = [
