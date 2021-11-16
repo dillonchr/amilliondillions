@@ -121,6 +121,7 @@ function addPortrait([pixels, label], forceBackgroundUpdate = false) {
 }
 
 const portraits = [
+  ["0,0,3c18,1c,424,22,20,40,40,1c0,3c0,3c0,180,2008,1ff0,0", "2021/11/16; listening to Swimmer by Tennis on loop"],
   ["ff1,300d,4003,8001,4003,381d,27e5,1009,811,241,991,f00f,811,508b,101,ffff", "2021/11/8; Playing a lot of metroid now"],
   ["1c0,4280,3c80,300,810,9f0,3800,0,0,18c0,2,202,204,208,190,20", "2021/11/1"],
   ["2000,1000,4ffc,2000,7,1ce4,84a,5,4,307,0,784,844,304,1004,4ff8", "2021/10/14"],
