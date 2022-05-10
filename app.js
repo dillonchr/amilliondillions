@@ -122,6 +122,10 @@ function addPortrait([pixels, label], forceBackgroundUpdate = false) {
 
 const portraits = [
   [
+    "0,0,380,7c0,d60,aa0,d60,aa0,fe0,540,380,10c,10c,100,100,0",
+    "2022/5/10; getting excited for Roland garros and also just wanting to play some tennis myself! Still rocking SWIMMER by TENNIS bye the WAYE",
+  ],
+  [
     "0,4,8,1c04,2380,4060,40,384,4608,2c04,4f00,1c0,22,1f0,710,800",
     "2022/3/2; it's time I have to break out the mower again already",
   ],
