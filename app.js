@@ -6,7 +6,7 @@ const pixels = Array(PIXEL_COUNT)
 const { ink, paper } = window.location.search
   .replace(/^\?/, "")
   .split("&")
-  .reduce((o, c) => ({ ...o, [c.split("=")[0]]: c.split("=")[1] }), {
+  .reduce((o, c) => ({ ...o, [c.split("=")[0]]: decodeURIComponent(c.split("=")[1]) }), {
     ink: "black",
     paper: "white",
   });
