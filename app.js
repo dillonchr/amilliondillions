@@ -133,6 +133,9 @@ function addPortrait([pixels, label], forceBackgroundUpdate = false) {
 }
 
 const portraits = [
+  [ "0,1ff0,3ff8,31fc,200c,186c,14,1044,4,2104,2484,1308,1008,1008,1110,820",
+    "2023/1/2; mon morning. Wow it's been a while. Going to Maui in 3 weeks. Giving first out talk in 3 months. Hopefully going to Scotland in 9 months. Australian Open coming up!",
+  ],
   [
     "1600,2c00,5800,b070,6081,c0a2,8c01,1003,2482,10,11,91,61,202,584,b38",
     "2022/7/23; sat morning convention session stream happening tomorrow :clap:"
